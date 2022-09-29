@@ -1,0 +1,332 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Typing Game</title>
+		<script>
+			window.onload = function(){
+				usernameTable();
+				document.username = prompt('Please enter your username...(If you are a new user,enter a new username)');
+				var password = prompt('Please enter your (new) password...');
+				queryUsername(document.username);
+				if(!document.user){
+					insertUsername({username:document.username,password:password});
+				}
+				else{
+					if(document.user != password){
+						document.write();
+						document.username = undefined;
+						document.alert('Password Wrong!');
+					}
+				}
+			}
+			let db = openDatabase("MySql","1.0","itemdata",1024*1024);
+			function createTable(){
+			    db.transaction(tx => {
+			        tx.executeSql("create table if not exists itemData(username, correct, incorrect, time)",[],
+			            (tx,result) => {
+			                console.log('创建item表成功:')
+			                console.log(result);
+			            },(tx,error) => {
+			                console.log('创建item表失败:'+error.message);
+			            })
+			    })
+			}
+			function queryData(){
+			    db.transaction(tx => {
+			        tx.executeSql("select * from itemData",[],
+			            (tx,result) => {
+			                console.log(result);
+						document.dataresult = result;
+			            },
+			            (tx,error) => {
+			                console.log('查询失败:'+error.message);
+						document.dataresult = undefined;
+			            })
+			    })
+			}
+			function insertData(item){
+			    db.transaction(tx => {
+			        tx.executeSql("insert into itemData (username,correct,incorrect,time) values(?,?,?,?)",[item.username,item.correct,item.incorrect,item.time],
+			            (tx,result) => {
+			                console.log('插入成功');
+			            },
+			            (tx,error) => {
+			                console.log('插入失败:'+error.message);
+			            })
+			    })
+			}
+			function usernameTable(){
+			    db.transaction(tx => {
+			        tx.executeSql("create table if not exists username(name, password)",[],
+			            (tx,result) => {
+			                console.log('创建username表成功:')
+			                console.log(result);
+			            },(tx,error) => {
+			                console.log('创建username表失败:'+error.message);
+			            })
+			    })
+			}
+			function queryUsername(username){
+			    db.transaction(tx => {
+			        tx.executeSql("select * from username where name="+username,[],
+			            (tx,result) => {
+			                console.log(result);
+						document.user = result;
+			            },
+			            (tx,error) => {
+			                console.log('查询失败:'+error.message);
+						document.user = false;
+			            })
+			    })
+			}
+			function insertUsername(item){
+			    db.transaction(tx => {
+			        tx.executeSql("insert into username (name,password) values(?,?)",[item.username,item.password],
+			            (tx,result) => {
+			                console.log('注册成功');
+						alert('New User OK!');
+			            },
+			            (tx,error) => {
+			                console.log('注册失败:'+error.message);
+						document.write();
+						alert('New User...Something Wrong!');
+			            })
+			    })
+			}
+			function getData(){
+				hidechildren();
+				var elem = document.createElement('table');
+				elem.innerHTML = '<thead><tr><td>UserName</td><td>Correct</td><td>Incorrect</td><td>Time</td></tr></thead><tbody id="databody"></tbody>';
+				elem.id = 'tabledata';
+				var returntomain = document.createElement('colorbutton');
+				returntomain.innerHTML = 'Return to MainPage';
+				returntomain.style = 'border: 2px solid blue; background-color: white; color: blue; border-radius: 20%; padding: 1px 3px; cursor: pointer;transition-duration: 0.4s;';
+				returntomain.id = 'returntomain';
+				returntomain.addEventListener('mouseover', function(){
+					returntomain.style.backgroundColor = 'blue';
+					returntomain.style.color = 'white';
+				});
+				returntomain.addEventListener('mouseleave', function(){
+					returntomain.style.backgroundColor = 'white';
+					returntomain.style.color = 'blue';
+				});
+				document.body.appendChild(returntomain);
+				returntomain.setAttribute('onclick','returntopage();');
+				document.body.appendChild(elem);
+				queryData(elem);
+				setTimeout('dataupdate(elem)',100);
+			}
+			function dataupdate(elem){
+				var data = document.dataresult;
+				if(data==undefined)
+					alert('Cannot Read Record Data :(');
+				else{
+					var dataarr = [];
+					var datalist = data.rows;
+					var len = datalist.length;
+					for(var i=0;i<len;i++){
+						var thisdata = datalist[i];
+						dataarr.push(thisdata);
+					}
+					dataarr.sort(function(a,b){return b.correct/b.time-a.correct/a.time});
+					console.log(dataarr);
+					for(var i=0;i<len;i++){
+						var thisdata = dataarr[i];
+						var datarow = document.createElement('tr');
+						datarow.innerHTML = '<td>'+thisdata.username+'</td><td>'+thisdata.correct+'</td><td>'+thisdata.incorrect+'</td><td>'+thisdata.time+'</td>';
+						document.getElementById('databody').appendChild(datarow);
+					}
+				}
+			}
+			function returntopage(){
+				var returntomain = document.getElementById('returntomain');
+				returntomain.remove();
+				var tabledata = document.getElementById('tabledata');
+				tabledata.remove();
+				showchildren();
+			}
+			createTable();
+		</script>
+		<style>
+			.body {
+				font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace;
+			}
+			td {
+				font-size: 30px;
+				padding: 10px;
+				text-align: center;
+				border-radius: 20%;
+			}
+			thead td:nth-child(1) {
+				background-color: grey;
+				color: white;
+			}
+			thead td:nth-child(2) {
+				background-color: lime;
+				color: black;
+			}
+			thead td:nth-child(3) {
+				background-color: red;
+				color: white;
+			}
+			thead td:nth-child(4) {
+				background-color: grey;
+				color: white;
+			}
+			tbody td {
+				background-color: white;
+			}
+		</style>
+		<script>
+			document.ingame = false;
+			function hidechildren(){
+				var ch = document.body.children;
+				for(var i=0;i<ch.length;i++)
+					ch[i].style.display = 'none';
+			}
+			function start(){
+				hidechildren();
+				var top = document.createElement('CENTER');
+				top.id = 'ingametop';
+				top.innerHTML = '<font size="30px;">Timer: <text id="timer">0</text>s<br>text to type: <text id="text"></text><br>now typed: <text id="typed"></text><br>Words typed: <text id="wordstyped">0</text><br>Words to type: <text id="wordstotype"></text><br>Correct: <text id="correct">0</text><br>Incorrect: <text id="incorrect">0</text></font>';
+				document.body.appendChild(top);
+				var arr = ['main','time','except','try','import','direction','array','help','selenium','builtins','animation','document','none','null','keyframe','sys','console','alert','var','debugger','print','wscript','shell','run','finally','echo','python','explorer','typing','repr','str','main','void','public','private','final','if','else','elif','queue','stack','set','off','multiset','map','include','modules','del','delete','fabs','abs','remove','createobject','list','catch','prototype','php','return','exit','self','cls','staticmethod','classmethod','push','append','result','api','send','msgbox','vbscript','cmd','iexplorer','chrome','each','children','input','cin','cout','scanf','printf','fgets','getchar','char','string','len','length','raise','zip','shutdown','lambda','onkeydown','as'];
+				document.arr = arr;
+				document.correct = 0;
+				document.incorrect = 0;
+				document.isstart = false;
+				document.wordstyped = 0;
+				var wordstotype = document.getElementById('wordstotype');
+				wordstotype.innerText = document.arr.length;
+				change();
+				document.ingame = true;
+			}
+			function random(){
+				document.nowword = '';
+				var num = Math.floor(Math.random()*document.arr.length);
+				var elem = document.arr[num];
+				document.arr.splice(num,1);
+				return elem;
+			}
+			function change(){
+				var typed = document.getElementById('typed');
+				typed.innerHTML = '';
+				var text = document.getElementById('text');
+				var word = random();
+				text.innerText = word;
+				document.word = word;
+			}
+			function gettime(){
+				var time = document.getElementById('timer');
+				var now = new Date();
+				time.innerText = Math.floor((now.getTime()-document.firstunix)/1000);
+			}
+			function starttime(){
+				document.isstart = true;
+				var now = new Date();
+				document.firstunix = now.getTime();
+				document.timerefresh = setInterval('gettime()',10);
+			}
+			function stoptime(){
+				clearInterval(document.timerefresh);
+			}
+			function getunixtime(){
+				var now = new Date();
+				return (now.getTime()-document.firstunix)/1000;
+			}
+			function showchildren(){
+				var ch = document.body.children;
+				for(var i=0;i<ch.length;i++)
+					ch[i].style.display = 'block';
+			}
+			document.onkeydown = function(e){
+				try{
+					if(!document.ingame)
+						return false;
+					var key = e.key;
+					if('a'<=key && key<='z'){
+						if(!document.isstart)
+							starttime();
+						var typed = document.getElementById('typed');
+						if(key == document.word[document.nowword.length]){
+							document.correct++;
+							typed.innerHTML += '<font style="background-color: lime;">'+key+'</font>';
+							var correct = document.getElementById('correct');
+							correct.innerText = document.correct;
+						}
+						else{
+							document.incorrect++;
+							typed.innerHTML += '<font style="background-color: red;">'+key+'</font>';
+							var incorrect = document.getElementById('incorrect');
+							incorrect.innerText = document.incorrect;
+						}
+						document.nowword += key;
+						if(document.word.length == document.nowword.length){
+							document.wordstyped++;
+							if(document.arr.length > 0){
+								var wordstyped = document.getElementById('wordstyped');
+								wordstyped.innerText = document.wordstyped;
+								var wordstotype = document.getElementById('wordstotype');
+								wordstotype.innerText = document.arr.length;
+								change();
+							}
+							else{
+								stoptime();
+								document.ingame = false;
+								var ingametop = document.getElementById('ingametop');
+								ingametop.remove();
+								showchildren();
+								insertData({username:document.username,correct:document.correct,incorrect:document.incorrect,time:getunixtime()});
+							}
+						}
+					}
+					return false;
+				}catch(e){
+					return false;
+				}
+			}
+		</script>
+	</head>
+	<body style="background-color:cyan;user-select:none;">
+		<center>
+			<font size="30">Typing Game</font>
+			<br>
+			<font size="20">Your UserName: <text id="username"></text></font>
+			<br>
+			<br>
+			<colorbutton id="start" style="border: 2px solid blue; background-color: white; color: blue; border-radius: 20%; padding: 1px 3px; cursor: pointer;transition-duration: 0.4s;" onclick="start()">
+				Click to start
+			</colorbutton>
+			<br>
+			<br>
+			<colorbutton id="recorddata" style="border: 2px solid blue; background-color: white; color: blue; border-radius: 20%; padding: 1px 3px; cursor: pointer;transition-duration: 0.4s;" onclick="getData()">
+				Record Data(Ranking)
+			</colorbutton>
+			<script>
+				document.oncontextmenu = new Function("return false");
+				document.onselectstart = new Function("return false");
+				var elem = document.getElementById('start');
+				elem.addEventListener('mouseover', function(){
+					elem.style.backgroundColor = 'blue';
+					elem.style.color = 'white';
+				});
+				elem.addEventListener('mouseleave', function(){
+					elem.style.backgroundColor = 'white';
+					elem.style.color = 'blue';
+				});
+				var record = document.getElementById('recorddata');
+				record.addEventListener('mouseover', function(){
+					record.style.backgroundColor = 'blue';
+					record.style.color = 'white';
+				});
+				record.addEventListener('mouseleave', function(){
+					record.style.backgroundColor = 'white';
+					record.style.color = 'blue';
+				});
+			</script>
+		</center>
+		<font size="10">[Typing Game]</font>
+		<br>
+		<code data-backticks="3"><font size="10">print warning raise zip set return list try catch finally else except wscript.shell createobject set ws list scanf printf document write location href var int string echo explorer.exe iexplorer.exe cmd any iterator public private void main class null undefined shutdown tasklist taskkill prototype as with this</font></code>
+	</body>
+</html>
