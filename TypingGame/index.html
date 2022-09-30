@@ -6,16 +6,20 @@
 			window.onload = function(){
 				usernameTable();
 				document.username = prompt('Please enter your username...(If you are a new user,enter a new username)');
-				var password = prompt('Please enter your (new) password...');
+				document.password = prompt('Please enter your (new) password...');
 				queryUsername(document.username);
-				if(!document.user){
+				setTimeout('createuser()',100);
+			}
+			function createuser(){
+				var password = document.password;
+				if(document.user.length == 0){
 					insertUsername({username:document.username,password:password});
 				}
 				else{
-					if(document.user != password){
-						document.write();
+					if(document.user[0].password != password){
 						document.username = undefined;
-						document.alert('Password Wrong!');
+						alert('Password Wrong!');
+						setTimeout('window.location.reload()',100);
 					}
 				}
 			}
@@ -68,10 +72,10 @@
 			}
 			function queryUsername(username){
 			    db.transaction(tx => {
-			        tx.executeSql("select * from username where name="+username,[],
+			        tx.executeSql("select * from username where name='"+username+"'",[],
 			            (tx,result) => {
 			                console.log(result);
-						document.user = result;
+						document.user = result.rows;
 			            },
 			            (tx,error) => {
 			                console.log('查询失败:'+error.message);
@@ -80,6 +84,7 @@
 			    })
 			}
 			function insertUsername(item){
+			    console.log(item);
 			    db.transaction(tx => {
 			        tx.executeSql("insert into username (name,password) values(?,?)",[item.username,item.password],
 			            (tx,result) => {
@@ -88,8 +93,8 @@
 			            },
 			            (tx,error) => {
 			                console.log('注册失败:'+error.message);
-						document.write();
 						alert('New User...Something Wrong!');
+						setTimeout('window.location.reload()',100);
 			            })
 			    })
 			}
