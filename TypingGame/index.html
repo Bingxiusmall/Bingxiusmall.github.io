@@ -3,6 +3,11 @@
 		<meta charset="utf-8">
 		<title>Typing Game</title>
 		<script>
+			function isipad(){
+				var info = navigator.userAgent;
+				var ipad = /iPad/i.test(info);
+				return ipad;
+			}
 			function isphone(){
 				var info = navigator.userAgent;
 				var phone = /Mobile/i.test(info);
@@ -167,30 +172,54 @@
 			.body {
 				font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace;
 			}
-			td {
+			#tabledata td {
 				font-size: 30px;
 				padding: 10px;
 				text-align: center;
 				border-radius: 20%;
 			}
-			thead td:nth-child(1) {
+			#tabledata thead td:nth-child(1) {
 				background-color: grey;
 				color: white;
 			}
-			thead td:nth-child(2) {
+			#tabledata thead td:nth-child(2) {
 				background-color: lime;
 				color: black;
 			}
-			thead td:nth-child(3) {
+			#tabledata thead td:nth-child(3) {
 				background-color: red;
 				color: white;
 			}
-			thead td:nth-child(4) {
+			#tabledata thead td:nth-child(4) {
 				background-color: grey;
 				color: white;
 			}
-			tbody td {
+			#tabledata tbody td {
 				background-color: white;
+			}
+			#jskeybdphone table {
+				margin: auto;
+			}
+			#jskeybdphone td {
+				background-color: white;
+				border-radius: 20%;
+				border: 5px;
+				width: 30px;
+				height: 30px;
+				text-align: center;
+				font-size: 20px;
+			}
+			#jskeybdipad table {
+				margin: auto;
+			}
+			#jskeybdipad td {
+				background-color: white;
+				border-radius: 20%;
+				border: 5px;
+				width: 60px;
+				height: 60px;
+				text-align: center;
+				font-size: 40px;
 			}
 		</style>
 		<script>
@@ -216,6 +245,33 @@
 				wordstotype.innerText = document.arr.length;
 				change();
 				document.ingame = true;
+				if(isphone()){
+					var jskeybd = document.createElement('div')
+					if(isipad())
+						jskeybd.id = 'jskeybdipad';
+					else
+						jskeybd.id = 'jskeybdphone';
+					document.body.appendChild(jskeybd);
+					document.jskeybd = jskeybd;
+					var jskeybd1 = document.createElement('table');
+					var jskeybd2 = document.createElement('table');
+					var jskeybd3 = document.createElement('table');
+					jskeybd1.innerHTML = '<tbody><tr><td>q</td><td>w</td><td>e</td><td>r</td><td>t</td><td>y</td><td>u</td><td>i</td><td>o</td><td>p</td></tr></tbody>';
+					jskeybd2.innerHTML = '<tbody><tr><td>a</td><td>s</td><td>d</td><td>f</td><td>g</td><td>h</td><td>j</td><td>k</td><td>l</td></tr></tbody>';
+					jskeybd3.innerHTML = '<tbody><tr><td>z</td><td>x</td><td>c</td><td>v</td><td>b</td><td>n</td><td>m</td></tr></tbody>';
+					jskeybd.appendChild(jskeybd1);
+					jskeybd.appendChild(jskeybd2);
+					jskeybd.appendChild(jskeybd3);
+					for(var keybd of jskeybd.children){
+						for(var keybdtd of keybd.getElementsByTagName('tr')[0].children){
+							keybdtd.addEventListener('click', function(){
+								console.log(this.innerText);
+								var event = new KeyboardEvent('keydown',{key:this.innerText});
+								document.dispatchEvent(event);
+							})
+						}
+					}
+				}
 			}
 			function random(){
 				document.nowword = '';
@@ -291,6 +347,8 @@
 								document.ingame = false;
 								var ingametop = document.getElementById('ingametop');
 								ingametop.remove();
+								if(document.jskeybd)
+									document.jskeybd.remove();
 								showchildren();
 								insertData({username:document.username,correct:document.correct,incorrect:document.incorrect,time:getunixtime()});
 							}
