@@ -21,6 +21,10 @@
 						alert('Password Wrong!');
 						setTimeout('window.location.reload()',100);
 					}
+					else{
+						var userelem = document.getElementById('username');
+						userelem.innerText = document.username;
+					}
 				}
 			}
 			let db = openDatabase("MySql","1.0","itemdata",1024*1024);
