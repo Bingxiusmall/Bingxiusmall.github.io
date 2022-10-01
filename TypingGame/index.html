@@ -3,7 +3,15 @@
 		<meta charset="utf-8">
 		<title>Typing Game</title>
 		<script>
+			function isphone(){
+				var info = navigator.userAgent;
+				var phone = /Mobile/i.test(info);
+				return phone;
+			}
+		</script>
+		<script>
 			window.onload = function(){
+				alert(isphone());
 				usernameTable();
 				document.username = prompt('Please enter your username...(If you are a new user,enter a new username)');
 				document.password = prompt('Please enter your (new) password...');
