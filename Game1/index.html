@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="gb2312">
+		<title>解密游戏</title>
+		<style>
+			@keyframes mousein {
+				from {
+					background-color: #ffffff
+				}
+				to {
+					background-color: #d5d7e3
+				}
+			}
+			@keyframes mouseout {
+				from {
+					background-color: #d5d7e3
+				}
+				to {
+					background-color: #ffffff
+				}
+			}
+			body {
+				margin: 0px;
+				animation: mouseout 0.3s linear forwards;
+				display: -moz-box;
+				display: -webkit-box;
+				-moz-box-align: center;
+				-webkit-box-align: center;
+				-moz-box-pack: center;
+				-webkit-box-pack: center;
+			}
+			body:hover {
+				animation: mousein 0.3s linear forwards;
+			}
+			.main {
+				font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace;
+				font-size: 300%;
+			}
+			input {
+				width: 25%;
+				height: 5%;
+				text-align: center;
+				font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace;
+				font-size: 150%;
+			}
+		</style>
+		<script defer>	
+			setInterval('document.body.style.height=document.documentElement.clientHeight+"px";document.body.style.width=document.documentElement.clientWidth+"px";',10);
+			var t=[
+					'恭喜你，成功的进入了错误网址',
+					'这...这不对吧？',
+					'你干嘛~~哈哈~~哎哟~~',
+					'作者的脑洞没那么大，至少没你大',
+					'Never gonna give you up~~~',
+					'你进入了一个虚无世界'
+			]
+			function r(){return t[Math.floor(Math.random()*(t.length-0.00001))]}
+			var w=['','lv1','lv2','lv3','__lv__i__s__four____iqhwtfpuiehupgheqphgpuiwegpnapsiegipnsp'];
+			var v={}
+			for(var i=1;i<w.length;++i) v[w[i]]=i;
+			var l=window.location.href.split('?');
+			function win(){clearInterval(document.m);window.location.href=l[0]+'?'+w[v[l[1]]+1];}
+			function q(e,o){document.m=setTimeout("document.body.innerHTML='<font class=\\'main\\'>"+'level '+v[l[1]]+'. '+e+"</font><br><input class=\\'mono-hero\\' id=\\'answer\\'></input>';setInterval('if(document.getElementById(\\'answer\\').value==\\'"+o+"\\') win();',10)",10);}
+			if(l.length==1) window.location.href+='?lv1';
+			else switch(l[1]){
+				case w[1]:q('1+1=?','2');break;
+				case w[2]:q('1+1=?','2');break;
+				case w[3]:var s=[1,'a',[{'b':1}]];console.log('数组s的值为: ',s);q('请进入第四关',[1,'a',[{'b':1}]]);break;
+				case w[4]:alert('暂时没别的关卡了,请等待更新');break;
+				default:console.log('404');setTimeout("document.body.innerHTML='<font class=\\'main\\'>"+r()+"</font>';",10);break;
+			}
+		</script>
+	</head>
+	<body></body>
+</html>
