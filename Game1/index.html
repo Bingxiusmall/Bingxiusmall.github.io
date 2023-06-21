@@ -60,8 +60,8 @@
 			var v={}
 			for(var i=1;i<w.length;++i) v[w[i]]=i;
 			var l=window.location.href.split('?');
-			function win(){clearInterval(document.m);window.location.href=l[0]+'?'+w[v[l[1]]+1];}
-			function q(e,o){document.m=setTimeout("document.body.innerHTML='<font class=\\'main\\'>"+'level '+v[l[1]]+'. '+e+"</font><br><input class=\\'mono-hero\\' id=\\'answer\\'></input>';setInterval('if(document.getElementById(\\'answer\\').value==\\'"+o+"\\') win();',50)",10);}
+			function win(){window.location.href=l[0]+'?'+w[v[l[1]]+1];}
+			function q(e,o){setTimeout("document.body.innerHTML='<font class=\\'main\\'>"+'level '+v[l[1]]+'. '+e+"</font><br><input class=\\'mono-hero\\' id=\\'answer\\'></input>';document.getElementById('answer').oninput=function(){if(this.value=='"+o+"') win();}",10);}
 			if(l.length==1) window.location.href+='?lv1';
 			else switch(l[1]){
 				case w[1]:q('1+1=?','2');break;
