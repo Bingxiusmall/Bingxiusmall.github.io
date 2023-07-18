@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Luogu Name Card</title>
+		<link rel="stylesheet" type="text/css" href="https://cdn.luogu.com.cn/css/amazeui.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.luogu.com.cn/css/luogu3.css?ver=20190102">
+		<script>
+			window.onload=function(){
+				var l=document.location.href.split('?');
+				if(l.length<2){
+					document.body.innerHTML='<h2>Params: name=...[&prize=[green|blue|gold][&color=[brown|gray|bluelight|green|orange|red|purple]]][&tag=...][&user=[number]]</h2><h2>Use &lt;img src=\"Your picture in this site\" /&gt; to push the picture in other websites.</h2>';
+				}
+				else{
+					var w=l[1].split('&');
+					var t={};
+					for(var i in w){var m=w[i].split('=');t[m[0]]=m[1];}
+					var elemstr='';
+					var n1=t['name'];
+					if(n1==undefined) n1='';
+					var n2=t['prize'];
+					var n3=t['color'];
+					if(n3==undefined) n3='grey';
+					var n4=t['tag'];
+					var n5=t['user'];
+					elemstr+='<a class="lg-fg-'+n3+' lg-bold"'+(n5==undefined?'':' href="https://www.luogu.com.cn/user/'+n5+'"')+' target="_blank" style="margin-right:3px;position: relative;top: -5px;">'+n1+'</a>';
+					if(n2!=undefined) elemstr+='<a data-v-0640126c="" href="https://www.luogu.com.cn/discuss/show/142324" target="_blank" colorscheme="none" class="color-none" style="color:'+(n2=='green'?'#52c41a':n2=='blue'?'#3498db':'#ffc116')+';"><svg data-v-0640126c="" aria-hidden="true" focusable="false" data-prefix="fad" data-icon="badge-check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-badge-check fa-w-16" style="--fa-primary-color: #fff; --fa-secondary-color: '+(n2=='green'?'#52c41a':n2=='blue'?'#3498db':'#ffc116')+'; --fa-secondary-opacity: 1;/*transform: scale(0.03);*/ width: 24px; height: 24px;/* position:fixed;*/"><g data-v-0640126c="" class="fa-group"><path data-v-0640126c="" fill="currentColor" d="M512 256a88 88 0 0 0-57.1-82.4A88 88 0 0 0 338.4 57.1a88 88 0 0 0-164.8 0A88 88 0 0 0 57.1 173.6a88 88 0 0 0 0 164.8 88 88 0 0 0 116.5 116.5 88 88 0 0 0 164.8 0 88 88 0 0 0 116.5-116.5A88 88 0 0 0 512 256zm-144.8-44.25l-131 130a11 11 0 0 1-15.55-.06l-75.72-76.33a11 11 0 0 1 .06-15.56L171 224a11 11 0 0 1 15.56.06l42.15 42.49 97.2-96.42a11 11 0 0 1 15.55.06l25.82 26a11 11 0 0 1-.08 15.56z" class="fa-secondary"></path><path data-v-0640126c="" fill="#fff" d="M367.2 211.75l-131 130a11 11 0 0 1-15.55-.06l-75.72-76.33a11 11 0 0 1 .06-15.56L171 224a11 11 0 0 1 15.56.06l42.15 42.49 97.2-96.42a11 11 0 0 1 15.55.06l25.82 26a11 11 0 0 1-.06 15.56z" class="fa-primary"></path></g></svg></a>'
+					if(n4!=undefined) elemstr+='&nbsp;<a data-v-0640126c="" data-v-5b9e5f50="" href="https://help.luogu.com.cn/manual/luogu/account/user-tag" target="_blank" colorscheme="none" class="color-none"><span class="am-badge am-radius lg-bg-'+n3+'" style="font-size:14px;border-radius:3px;position:fixed;top:2px;">'+n4+'</span></a>';
+					elemstr='<h2 style="margin-bottom: 0">'+elemstr+'</h2>';
+					document.body.innerHTML=elemstr;
+				}
+			}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
