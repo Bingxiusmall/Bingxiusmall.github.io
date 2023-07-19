@@ -8,9 +8,11 @@
 			window.onload=function(){
 				var l=document.location.href.split('?');
 				if(l.length<2){
-					document.body.innerHTML='<h2>Params: name=...[&prize=[green|blue|gold][&color=[brown|gray|bluelight|green|orange|red|purple]]][&tag=...][&user=[number]]</h2><h2>Use &lt;img src=\"Your picture in this site\" /&gt; to push the picture in other websites.</h2>';
+					document.body.innerHTML='<h2>Params: name=...[&prize=[green|blue|gold]][&color=[brown|gray|bluelight|green|orange|red|purple]][&tag=...][&user=[number]]</h2><h2>Use &lt;img src=\"Your picture in this site\" /&gt; to push the picture in other websites.</h2>';
 				}
 				else{
+					l[1]=decodeURI(l[1]);
+					l[1]=l[1].replaceAll(' ','');
 					var w=l[1].split('&');
 					var t={};
 					for(var i in w){var m=w[i].split('=');t[m[0]]=m[1];}
@@ -19,7 +21,7 @@
 					if(n1==undefined) n1='';
 					var n2=t['prize'];
 					var n3=t['color'];
-					if(n3==undefined) n3='grey';
+					if(n3==undefined) n3='gray';
 					var n4=t['tag'];
 					var n5=t['user'];
 					elemstr+='<a class="lg-fg-'+n3+' lg-bold"'+(n5==undefined?'':' href="https://www.luogu.com.cn/user/'+n5+'"')+' target="_blank" style="margin-right:3px;position: relative;top: -5px;">'+n1+'</a>';
