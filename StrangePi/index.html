@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>奇怪的“圆周率” Strange "Pi"</title>
+		<script defer>
+			setTimeout('mn=document.getElementById("main").getContext("2d");\
+			pi=document.getElementById("pi");\
+			mn.fillStyle="#000";\
+			mn.beginPath();\
+			mn.arc(301,301,300,0,Math.PI*2,false);\
+			mn.stroke();\
+			mn.rect(1,1,600,600);\
+			mn.stroke();',1);
+			a=2237,b=2873,c=a,d=b-a;
+			function draw(){
+				var x,y;
+				if(c>=a*d/(b-a)){
+					--c,x=y=0;
+					mn.fillStyle="#f00";
+					while((x-300)*(x-300)+(y-300)*(y-300)>=300*300) x=Math.random()*600,y=Math.random()*600;
+				}
+				else{
+					--d,x=y=300;
+					mn.fillStyle="#00f";
+					while((x-300)*(x-300)+(y-300)*(y-300)<=300*300) x=Math.random()*600,y=Math.random()*600;
+				}
+				mn.beginPath();
+				mn.arc(x+1,y+1,1,0,Math.PI*2,false);
+				mn.closePath();
+				mn.fill();
+				pi.innerText=(Math.round((a-c)/(b-c-d)*4*1e6)/1e6).toString();
+			}
+			function start(x){
+				x.remove();
+				for(var i=0;i<b;++i) setTimeout('draw();',i*3);
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="main" width="602" height="602">浏览器不支持canvas</canvas>
+		<font size="10px" onclick="start(this);">π≈<text id="pi">...</text></font>
+		&nbsp;&nbsp;<font size="10px" onclick="start(this);">start!</font>
+	</body>
+</html>
